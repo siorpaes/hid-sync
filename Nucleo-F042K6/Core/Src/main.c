@@ -99,22 +99,22 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	/* USER CODE END WHILE */
-    click_report[2] = 7; // send 'd'
-    USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
-    HAL_Delay(100);
+    /* Wait for button press */
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    while(HAL_GPIO_ReadPin(GPIOB, BTN1_Pin) == GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 
-    click_report[2] = 4; // send 'a'
+		/* Send space */
+    click_report[2] = 44; // send space keycode
     USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
-    HAL_Delay(100);
+    HAL_Delay(10);
+    click_report[2] = 0; // send null to terminate press
+    USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
 
-    click_report[2] = 29; // send 'z'
-    USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
-    HAL_Delay(100);
+    /* Wait assigned time and switch relay on */
 
-    click_report[2] = 44; // send space
-    USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
-    HAL_Delay(100);
+
+		/* USER CODE END WHILE */
 /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
