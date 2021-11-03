@@ -68,6 +68,16 @@ void Error_Handler(void);
 #define SWCLK_GPIO_Port GPIOA
 #define VCP_RX_Pin GPIO_PIN_15
 #define VCP_RX_GPIO_Port GPIOA
+#define BTN2_Pin GPIO_PIN_4
+#define BTN2_GPIO_Port GPIOB
+#define BTN1_Pin GPIO_PIN_5
+#define BTN1_GPIO_Port GPIOB
+#define OUT2_Pin GPIO_PIN_6
+#define OUT2_GPIO_Port GPIOB
+#define OUT1_Pin GPIO_PIN_7
+#define OUT1_GPIO_Port GPIOB
+#define LED_Pin GPIO_PIN_8
+#define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
