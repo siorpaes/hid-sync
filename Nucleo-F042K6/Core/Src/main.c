@@ -69,6 +69,8 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   extern USBD_HandleTypeDef hUsbDeviceFS;
+  volatile USBD_HID_HandleTypeDef *hhid;// = (USBD_HID_HandleTypeDef *)hUsbDeviceFS.pClassData;
+  int i;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -107,15 +109,21 @@ int main(void)
 		/* Send space */
     click_report[2] = 44; // send space keycode
     USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
-    HAL_Delay(10);
-    click_report[2] = 0; // send null to terminate press
-    USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
+
+    /* Send null. BUG: for unknown reason, needs to be sent thrice :| */
+    click_report[2] = 0;
+    i = 3;
+    while(i--){
+      HAL_Delay(10);
+      USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
+		}
+
+    HAL_Delay(250);
 
     /* Wait assigned time and switch relay on */
 
 
 		/* USER CODE END WHILE */
-/* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
