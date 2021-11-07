@@ -69,7 +69,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   extern USBD_HandleTypeDef hUsbDeviceFS;
-  volatile USBD_HID_HandleTypeDef *hhid;// = (USBD_HID_HandleTypeDef *)hUsbDeviceFS.pClassData;
+//volatile USBD_HID_HandleTypeDef *hhid;// = (USBD_HID_HandleTypeDef *)hUsbDeviceFS.pClassData;
   int i;
   /* USER CODE END 1 */
 
@@ -98,12 +98,17 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+     /* USER CODE BEGIN WHILE */
   while (1)
   {
+		/* Relay off */
+    HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, GPIO_PIN_RESET);
+		
     /* Wait for button press */
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-    while(HAL_GPIO_ReadPin(GPIOB, BTN1_Pin) == GPIO_PIN_SET);
+    while(HAL_GPIO_ReadPin(GPIOB, BTN1_Pin) == GPIO_PIN_SET){
+			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+			HAL_Delay(50);
+		}
     HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 
 		/* Send space */
@@ -117,13 +122,21 @@ int main(void)
       HAL_Delay(10);
       USBD_HID_SendReport(&hUsbDeviceFS, click_report, CLICK_REPORT_SIZE);
 		}
-
-    HAL_Delay(250);
-
+    
     /* Wait assigned time and switch relay on */
+		i = 8;
+		while(i     --){
+			HAL_Delay(500);
+			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    }
+    HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, GPIO_PIN_SET);
 
 
-		/* USER CODE END WHILE */
+    /* Wait some other time and switch relay off */
+    HAL_Delay(3000);
+    HAL_GPIO_WritePin(Relay_GPIO_Port, Relay_Pin, GPIO_PIN_RESET);
+
+    /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
@@ -221,20 +234,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, OUT2_Pin|OUT1_Pin|LED_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : BTN2_Pin BTN1_Pin */
-  GPIO_InitStruct.Pin = BTN2_Pin|BTN1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : OUT2_Pin OUT1_Pin */
-  GPIO_InitStruct.Pin = OUT2_Pin|OUT1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOB, LED_Pin|OUT2_Pin|Relay_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
@@ -242,6 +242,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BTN2_Pin BTN1_Pin */
+  GPIO_InitStruct.Pin = BTN2_Pin|BTN1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : OUT2_Pin Relay_Pin */
+  GPIO_InitStruct.Pin = OUT2_Pin|Relay_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
