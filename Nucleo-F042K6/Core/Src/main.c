@@ -125,7 +125,7 @@ int main(void)
     
     /* Wait assigned time and switch relay on */
 		i = 8;
-		while(i     --){
+		while(i--){
 			HAL_Delay(500);
 			HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     }
