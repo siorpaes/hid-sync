@@ -1,5 +1,6 @@
 # hid-sync
-HID keyboard with synced external actuation.\\
+HID keyboard with synced external actuation.\
+\
 The purpose of this project is to solve the problem of visual art performers who need to synchronize a video clip with some external actuations such as lamps, pumps, motors, whatever can be managed by a relay.\
 The firmware acts as a normal USB HID keyboard: when pressing the button, a defined key (tyipically space-bar) is sent to the connected device (PC, tablet, smartphone) so to start the video clip. A timer synchronizes with the button press so that an external supply can be turned on or off after a defined interval. \
 In this way, it is possible to synchronize the driving of external loads with whatever video clip.
